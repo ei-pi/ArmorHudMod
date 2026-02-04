@@ -61,27 +61,23 @@ public class ArmorHudOverlay {
     }
 
     public void renderInventoryDurability(GuiGraphics context, Slot slot, int guiX, int guiY) {
-        if (!config.isShowHandDurability()) return;
+        if (config == null || !config.isShowHandDurability()) return;
         int mode = config.getDurabilityDisplayMode();
         if (mode == 0) return;
 
         ItemStack stack = slot.getItem();
-
+        if (stack.isEmpty()) return;
 
         context.pose().pushMatrix();
-
-
         context.pose().translate(0.0f, 0.0f);
 
         int renderX = guiX + slot.x + 2;
-        int renderY = guiY + slot.y - 9;
-
+        int renderY = guiY + slot.y - 10;
 
         drawDurabilityTextSimple(context, renderX, renderY, 16, stack, 0, 0, mode == 2);
 
         context.pose().popMatrix();
     }
-
 
     private void renderHotbarDurability(GuiGraphics context, int sw, int sh) {
         Minecraft client = Minecraft.getInstance();
