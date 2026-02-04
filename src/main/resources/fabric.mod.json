@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "armor_hud",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "name": "Armor Hud",
   "description": "Customizable Armor Hud with customizable durability HUD",
   "authors": [
