@@ -7,6 +7,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -17,15 +18,18 @@ public abstract class HandledScreenMixin {
     @Shadow protected int leftPos;
     @Shadow protected int topPos;
 
-    @Inject(method = "render", at = @At("TAIL"))
-    private void onRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    @Unique
+    private static final ArmorHudOverlay DURABILITY_RENDERER = new ArmorHudOverlay();
+
+    @Inject(method = "renderTooltip", at = @At("TAIL"))
+    private void onRenderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, CallbackInfo ci) {
         Slot hoveredSlot = ((HandledScreenAccessor) this).getFocusedSlot();
 
         if (hoveredSlot != null && hoveredSlot.hasItem()) {
             ItemStack stack = hoveredSlot.getItem();
 
             if (stack.isDamageableItem()) {
-                new ArmorHudOverlay().renderInventoryDurability(guiGraphics, hoveredSlot, this.leftPos, this.topPos);
+                DURABILITY_RENDERER.renderInventoryDurability(guiGraphics, hoveredSlot, this.leftPos, this.topPos);
             }
         }
     }
