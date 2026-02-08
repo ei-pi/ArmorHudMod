@@ -384,11 +384,7 @@ public class ArmorHudOverlay {
 
 
         int mode = config.getDurabilityDisplayMode();
-        if (mode == 1) {
-            drawDurabilityTextSimple(context, boxX, boxY, boxSize, armorItem, offsetXNumber, offsetYNumber, false);
-        } else if (mode == 2) {
-            drawDurabilityTextSimple(context, boxX, boxY, boxSize, armorItem, offsetXNumber, offsetYNumber, true);
-        }
+        drawDurabilityTextSimple(context, boxX, boxY, boxSize, armorItem, offsetXNumber, offsetYNumber, mode == 2);
     }
 
     // ================= DURABILITY =================
@@ -437,18 +433,24 @@ public class ArmorHudOverlay {
                 ? Math.round(ratio * 100) + "%"
                 : String.valueOf(durability);
 
-        int color =
-                ratio > 0.7f ? 0xFF00FF00 :
-                        ratio > 0.4f ? 0xFFFFFF00 :
-                                ratio > 0.2f ? 0xFFFFA500 :
-                                        ratio > 0.05f ? 0xFFFF0000 :
-                                                0xFF000000;
+        int color = getColor(ratio);
 
         var tr = Minecraft.getInstance().font;
         int textX = boxX + (boxSize - tr.width(text)) / 2 + offsetX;
         int textY = boxY + boxSize - tr.lineHeight + offsetY;
 
         context.drawString(tr, text, textX, textY, color);
+    }
+
+    private int getColor(float ratio) {
+        if (ratio > 0.7f) return 0xFF00FF00;
+        if (ratio > 0.4f) return 0xFFFFFF00;
+        if (ratio > 0.2f) return 0xFFFFA500;
+        if (ratio > 0.05f) return 0xFFFF0000;
+
+        long millis = System.currentTimeMillis();
+        millis /= 500;
+        return millis % 2 == 0 ? 0xFF000000 : 0xFFFF0000;
     }
 
     private void fill(GuiGraphics context, int x1, int y1, int x2, int y2, int color) {
